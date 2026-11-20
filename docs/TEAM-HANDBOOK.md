@@ -1,6 +1,6 @@
 # Pong 組員操作、編譯與程式閱讀手冊
 
-本手冊讓組員從取得專案開始，在自己的 Windows 電腦建置、遊玩、閱讀程式並記錄報告。專案使用 C++20、raylib 5.5 和 nlohmann/json 3.11.3。
+本手冊讓組員從取得專案開始，在自己的 Windows 電腦建置、遊玩、閱讀程式並記錄報告。專案使用 `C++20`、raylib 5.5 和 nlohmann/json 3.11.3。
 
 [TOC]
 
@@ -115,7 +115,7 @@ GitHub Desktop 先按 Fetch origin，有更新就 Pull。建立自己的分支�
 |無法載入 build.ps1，系統禁止執行腳本|對下載 ZIP 或專案資料夾確認來源後，先嘗試 Unblock-File .\build.ps1；若仍受執行原則限制，改用下方的手動編譯指令。受學校管理政策限制時請管理員協助|
 |找不到 raylib.h|確認 external/raylib-5.5_win64_mingw-w64/include/raylib.h 存在，建置使用 -Deps .\external|
 |找不到 json.hpp|確認 external/json.hpp 已下載；不要只抓 .cpp|
-|std::numbers 不存在|編譯須用 -std=c++20，並確認 g++ 支援 C++20|
+|`std::numbers` 不存在|編譯須用 `-std=c++20`，並確認 `g++` 支援 `C++20`|
 |cannot find -lraylib|檢查 external 下的 lib/libraylib.a 與 -L 路徑，使用 x64 UCRT64 工具鏈|
 |undefined reference|確認所需 .cpp 已加入建置；不要只編譯 main.cpp|
 |multiple definition of main|不要把 test_game.cpp 和 main.cpp 編成同一個程式|
@@ -147,7 +147,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
 
 ## 10. 安裝檔和版本發佈
 
-先建置 Pong.exe，另外安裝 Inno Setup，開啟 Pong.iss 編譯，產物在 release/Pong-Setup-3.0.0-win-x64.exe。安裝檔和 Pong.exe 放 GitHub Releases；自動產生的 .exe、.res、遊戲存檔及備份資料夾由 .gitignore 排除。
+先建置 Pong.exe，另外安裝 Inno Setup，開啟 Pong.iss 編譯，產物在 release/Pong-Setup-3.0.0-win-x64.exe。[組員試玩版下載](https://github.com/TobyYangc/PongLearning/releases/tag/v3.0.0-team.1) 已附上安裝檔、Pong.exe 與校驗碼。原始碼 ZIP 含編譯套件。自動產生的 .exe、.res、遊戲存檔及備份資料夾由 .gitignore 排除。
 
 發行前用新解壓縮的專案資料夾編譯，確認相依檔案完整。乾淨 Windows 的安裝、解除安裝和組員實機試玩另行記錄。
 
