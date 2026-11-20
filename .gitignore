@@ -1,0 +1,15 @@
+*.exe
+*.res
+*.o
+*.obj
+*.log
+*.tmp
+release/
+lesson-data/
+acceptance-data/
+backup*/
+.vscode/
+config.json
+history.json
+result.json
+pong.lock
