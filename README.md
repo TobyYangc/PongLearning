@@ -5,7 +5,6 @@ Windows x64、C++20、raylib 5.5。此份原始碼取自目前的 PongLearning�
 ## 先閱讀
 
 - [組員教學手冊](docs/TEAM-HANDBOOK.md)，包含下載、環境安裝、編譯、閱讀程式、協作及錯誤排解。
-- [HackMD 共筆手冊](https://hackmd.io/7eoGOVjXTPapJ91ctSQgmg)。
 - [第三方套件說明](THIRD-PARTY-NOTICES.md)。
 
 ## 快速編譯
@@ -49,6 +48,3 @@ if ($LASTEXITCODE -eq 0) { .\test_game.exe }
 |app.rc / app.manifest|Windows 資源與 DPI 宣告|
 |Pong.iss|Inno Setup 安裝檔設定|
 
-## 驗證範圍
-
-交付副本已用 C++20 重建並通過核心測試，安裝檔已編譯。組員仍需在自己的電腦確認鍵位、滑鼠切頁、最大化、音訊和安裝流程。報告請區分自動測試與實際試玩結果。
