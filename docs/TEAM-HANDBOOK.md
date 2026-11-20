@@ -6,7 +6,7 @@
 
 ## 1. 取得專案與權限
 
-專案預計使用 GitHub 私人儲存庫。組員先用自己的 GitHub 帳號接受 Collaborator 邀請，才能存取專案。邀請需要組員的 GitHub 帳號，由專案擁有者在 Settings → Collaborators 加入。
+專案使用 GitHub 私人儲存庫 [TobyYangc/PongLearning](https://github.com/TobyYangc/PongLearning)。組員先用自己的 GitHub 帳號接受 Collaborator 邀請，才能存取專案。邀請需要組員的 GitHub 帳號，由專案擁有者在 Settings → Collaborators 加入。
 
 只想先閱讀或編譯，在儲存庫按 Code → Download ZIP，解壓縮到自己的開發資料夾。需要持續修改，使用 GitHub Desktop 登入，再按 File → Clone repository 選此專案。Clone 會保留 Git 版本紀錄，ZIP 是當時的一份快照。
 
