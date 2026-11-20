@@ -6,7 +6,7 @@
 
 ## 1. 取得專案與權限
 
-專案使用 GitHub 私人儲存庫 [TobyYangc/PongLearning](https://github.com/TobyYangc/PongLearning)。組員先用自己的 GitHub 帳號接受 Collaborator 邀請，才能存取專案。邀請需要組員的 GitHub 帳號，由專案擁有者在 Settings → Collaborators 加入。
+專案使用 GitHub 公開儲存庫 [TobyYangc/PongLearning](https://github.com/TobyYangc/PongLearning)。任何人可閱讀、下載及在本機編譯。公開可讀不會自動授予直接推送權限；組員可 Fork 後透過 Pull Request 提交修改，需要直接推送時再由擁有者加入 Collaborator。
 
 只想先閱讀或編譯，在儲存庫按 Code → Download ZIP，解壓縮到自己的開發資料夾。需要持續修改，使用 GitHub Desktop 登入，再按 File → Clone repository 選此專案。Clone 會保留 Git 版本紀錄，ZIP 是當時的一份快照。
 
@@ -94,7 +94,9 @@ launch 使用 570 px/s 初速，角度正值向下、負值向上，左右另由
 
 ## 7. 組員如何修改與交回
 
-GitHub Desktop 先按 Fetch origin，有更新就 Pull。建立自己的分支，例如 feature/menu-layout，再修改程式。先編譯和測試，寫清楚 Commit summary，Commit 後 Push，最後建立 Pull Request 說明修改原因、操作方式與測試結果。
+沒有直接推送權限時，先在 GitHub 按 Fork，建立自己帳號下的專案副本，再用 GitHub Desktop Clone 自己的 Fork。建立分支，例如 feature/menu-layout，修改後編譯、測試、Commit、Push，再從自己的 Fork 建立指向 TobyYangc/PongLearning 的 Pull Request，說明修改原因、操作方式與測試結果。
+
+已加入 Collaborator 的組員可直接 Clone 原儲存庫，在自己的分支 Commit、Push 後建立 Pull Request。開始工作前先 Fetch/Pull；使用 Fork 時也要透過 Sync fork 取得上游更新。
 
 同時修改同一行可能衝突，先和該檔案負責人對照兩邊的內容再合併。合併完成後每位組員更新自己的 main。不要用上傳整份舊資料夾的方式蓋掉其他人的最新修改。
 
@@ -110,7 +112,7 @@ GitHub Desktop 先按 Fetch origin，有更新就 Pull。建立自己的分支�
 
 |現象|先檢查與處理|
 |---|---|
-|看不到私人儲存庫或 404|登入被邀請的帳號，接受邀請，確認網址|
+|儲存庫或下載連結顯示 404|本專案已公開，先確認網址為 TobyYangc/PongLearning；若網頁可開但 Git 推送被拒，檢查是否推到自己的 Fork 或已取得 Collaborator 權限|
 |找不到 g++ 或 windres|安裝 UCRT64 工具鏈，在本次 PowerShell 加入 C:\msys64\ucrt64\bin 到 PATH|
 |無法載入 build.ps1，系統禁止執行腳本|對下載 ZIP 或專案資料夾確認來源後，先嘗試 Unblock-File .\build.ps1；若仍受執行原則限制，改用下方的手動編譯指令。受學校管理政策限制時請管理員協助|
 |找不到 raylib.h|確認 external/raylib-5.5_win64_mingw-w64/include/raylib.h 存在，建置使用 -Deps .\external|
@@ -153,7 +155,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
 
 ## 11. HackMD 共筆方式
 
-組員可以在此手冊補充遭遇的錯誤、重現步驟、解法與結果。分享權限由筆記右上角「分享」控制，邀請組員並選可編輯。新帳號先完成 email 驗證，以免影響後續編輯與邀請。
+此筆記已設定為「所有人可閱讀、已登入者可編輯」。組員開啟連結即可閱讀，登入 HackMD 後可補充錯誤、重現步驟、解法與結果。任何取得連結且登入的人都符合編輯資格。分享權限可在右上角「分享」查看。新帳號先完成 email 驗證，以免影響後續編輯。
 
 每次重要更動同時更新 GitHub 的 docs/TEAM-HANDBOOK.md，避免手冊和程式版本不同步。
 
