@@ -1,0 +1,4 @@
+# Count the current application, excluding dependencies and archived code.
+external/** linguist-vendored=true
+legacy/** linguist-detectable=false
+docs/** linguist-documentation=true

@@ -1,5 +1,17 @@
 # Pong v3｜Tkinter＋C++20單一視窗
 
+## 直接下載遊戲
+
+|下載|用途|
+|---|---|
+|[下載Windows安裝檔.exe](https://github.com/TobyYangc/PongLearning/releases/download/v3.0.0-tk.1/Pong-Tk-Setup-3.0.0-win-x64.exe)|下載後執行安裝|
+|[下載可攜版ZIP（內含Pong.exe）](https://github.com/TobyYangc/PongLearning/releases/download/v3.0.0-tk.1/Pong-Tk-win-x64.zip)|完整解壓縮後執行Pong/Pong.exe|
+|[查看全部下載附件](https://github.com/TobyYangc/PongLearning/releases/tag/v3.0.0-tk.1)|安裝檔、可攜版與校驗碼|
+
+執行檔放在Releases下載附件，原始碼列表不包含建置產物。可攜版請保留整個Pong資料夾，Pong.exe需要同資料夾的_internal執行環境，不能單獨取出。
+
+## 專題架構
+
 Python/Tkinter管理選單、設定、戰績、輸入與繪圖；C++20 DLL管理物理、CPU、計分和階段。開打、暫停、結算、返回主選單都在同一個視窗。
 
 ## 組員請依這個順序閱讀
