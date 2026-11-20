@@ -13,3 +13,17 @@ config.json
 history.json
 result.json
 pong.lock
+
+# Python/Tkinter builds and test data
+__pycache__/
+*.py[cod]
+pong_core.dll
+build/
+dist/
+*.spec
+backups/
+lesson-settings/
+lesson-build-check/
+packaged-test-data/
+performance-data/
+pending-match.json

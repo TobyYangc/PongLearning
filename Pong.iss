@@ -9,12 +9,12 @@ PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=release
-OutputBaseFilename=Pong-Setup-3.0.0-win-x64
+OutputBaseFilename=Pong-Tk-Setup-3.0.0-win-x64
 Compression=lzma2
 SolidCompression=yes
 
 [Files]
-Source: "Pong.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Pong\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Tasks]
 Name: desktopicon; Description: "Create a desktop shortcut"; Flags: unchecked

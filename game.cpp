@@ -1,4 +1,5 @@
 #include "game.h"
+#include "raylib.h"
 #include <algorithm>
 #include <numbers>
 #include <cmath>
@@ -163,74 +164,77 @@ int Game::tick(float dt, int left, int right) {
 
     int events = None;
 
-    const float oldX = ball.x, oldY = ball.y, initialVy = vy;
-    // 保存起點與原垂直速度，題供後面求碰拍時刻的位置
-    ball.x += vx*dt;//水平位移
-    ball.y += vy*dt;//垂直位移
-    if (ball.y <= Radius && vy < 0) {
-        ball.y = 2*Radius - ball.y;// 上牆反射，把超出的距離鏡射回場內
-        // 新y = Radius + (Radius - ball.y) = 2*Radius - ball.y
-        vy = -vy;//反轉垂直速度，撞上牆後由向上改為向下
-        events |= Wall;// 加入撞牆事件
-    } else if (ball.y >= H-Radius && vy > 0) {
-        ball.y = 2*(H-Radius) - ball.y;
-        vy = -vy;
-        events |= Wall;
-    }
+    // CheckCollisionCircleRec 判斷當下是否相交，所以整個 Step 再細分。
+    // 球與拍的相對位移每小步不超過約 Radius/4，避免跨過拍子而漏判。
+    //ballSpeed取正式上限800與目前總速率的較大值，碰拍加速後仍有足夠細分。
+    const float ballSpeed = std::max(800.0f, std::hypot(vx, vy));
+    //取兩拍較大的移速量值，和球速相加估計最大相對速度。
+    const float paddleSpeed = std::max(std::abs(move[0]), std::abs(move[1]));
+    //parts=向上取整(最大相對速度×dt÷2.5px)，至少1段；ceil避免小數被直接截掉。
+    const int parts = std::max(1, static_cast<int>(
+        std::ceil((ballSpeed + paddleSpeed) * dt / (Radius * .25f))));
+    //slice為每個碰撞小步的秒數，parts段合計仍是原本dt。
+    const float slice = dt / parts;
 
-    const int i = vx < 0 ? 0 : 1;// 球向左檢查左拍，向右檢查右拍
-    const float sign = i == 0 ? 1.0f : -1.0f; // 球拍朝場內的方向：左拍+1，右拍-1
-    const float face = bats[i].x + sign*(9 + Radius);//球心接觸線：拍心加上朝場內的「拍半寬9＋球半徑」
+    for (int part = 1; part <= parts; ++part) {
+        //elapsed是從本次tick起點到目前小步終點的秒數，用來推算同一時刻的拍心。
+        const float elapsed = part * slice;
+        ball.x += vx * slice;
+        ball.y += vy * slice;
 
-    if (vx != 0 && sign*(oldX-face) >= 0 && sign*(ball.x-face) <= 0) {
-    // 球有水平移動，且本步從場內側跨過球心接觸線，才進一步檢查碰拍
-        const float fraction = (face-oldX)/(ball.x-oldX);
-        // 到接觸線的位移占此步位移的比例
-        const float at = dt*fraction;
-        // 從此步開始到接觸線，經過的秒數
-        const float unreflectedY = oldY + initialVy*at;
-        // 依原垂直速度求接觸時刻的球高，尚未套用牆面反射
-        const float contact = unreflectedY < Radius ? 2*Radius-unreflectedY :
-                              unreflectedY > H-Radius ? 2*(H-Radius)-unreflectedY :
-                              unreflectedY;
-        // 若接觸前已跨過上下牆，鏡射得到接觸時刻的實際球高
-        const float batY = std::clamp(startY[i] + move[i]*at, Half, H-Half);
-        // 從拍子的本步起點推進at秒，求同一時刻的拍心高度
-        const bool againstEdge = (batY <= Half && move[i] < 0) ||
-                                 (batY >= H-Half && move[i] > 0);
-        //判斷球拍有沒有被邊界擋住，以及球是否打中
-        const float actual = againstEdge ? 0 : move[i];// 被擋住時，移拍帶角使用0速度
-        const float offset = contact - batY;// 球心相對拍心的偏移，負上正下
-
-        if (std::abs(offset) <= Half + Radius) {
-        // 球心與拍心差距不超過66px，判定命中
-            const float base = 60 * std::clamp(offset/Half, -1.0f, 1.0f);
-            // 擊中位置轉成基礎角度，拍心0°、越靠上下緣越斜
-            const float angle = std::clamp(base + 8*std::clamp(actual/maxSpeed[i], -1.0f, 1.0f),
-                                           -60.0f, 60.0f)*Rad;
-            // 加上最多 ±8°移拍帶角，總角度限制±60°，再轉弧度
-            const float speed = std::min(800.0f, 1.05f * std::hypot(vx,vy));
-            // 目前總速率增加5%，最高800 px/s
-            if (unreflectedY > Radius && unreflectedY < H-Radius) events &= ~Wall;
-            // 若碰拍時還沒撞牆，清掉先前依整步終點算出的撞牆事件
-
-            vx = sign*speed*std::cos(angle);// 水平反彈朝場內
-            vy = speed*std::sin(angle);// 垂直方向由反彈角度決定
-            ball.x = face + sign*.01f;// 接觸點朝場內偏移 0.01 px,減少下一步再次判定同一次接觸的機會
-            ball.y = std::clamp(contact, Radius, H-Radius);// 球心維持在上下邊界內
-            lastBat = i;// 記下最近命中的球拍索引
-            hitTimer = .09f;// 啟動 0.09 秒命中亮框
-            events |= Paddle;// 加入碰拍事件
+        if (ball.y <= Radius && vy < 0) {
+            ball.y = 2 * Radius - ball.y;
+            vy = -vy;
+            events |= Wall;
+        } else if (ball.y >= H - Radius && vy > 0) {
+            ball.y = 2 * (H - Radius) - ball.y;
+            vy = -vy;
+            events |= Wall;
         }
-    }
 
-    if (ball.x + Radius < 0 || ball.x - Radius > W) {
-    // 整顆球超出左右邊界才計分
-        last = ball.x < 0 ? 1 : 0;// 左出界右方得分，右出界左方得分
-        ++score[last];// 得分方加一分
-        now_phase = score[last] >= cfg.target ? Phase::Over : Phase::Point;
-        timer = now_phase == Phase::Over ? .18f : .35f;
-        events |= Score;// 加入得分事件
+        // 只檢查正在迎向的球拍，反彈離開後不會再次加速同一個接觸。
+        const int i = vx < 0 ? 0 : 1;
+        const float sign = i == 0 ? 1.0f : -1.0f;
+        const float batY = std::clamp(startY[i] + move[i] * elapsed, Half, H - Half);
+        //Rectangle採左上角x/y加寬高；球拍中心座標先減半寬9和半高56。
+        const Rectangle paddle{bats[i].x - 9, batY - Half, 18, 2 * Half};
+
+        if (vx != 0 &&
+            //CheckCollisionCircleRec接收球心、半徑和矩形，會檢查矩形邊與四個圓角接觸範圍。
+            CheckCollisionCircleRec({ball.x, ball.y}, Radius, paddle)) {
+            const bool againstEdge = (batY <= Half && move[i] < 0) ||
+                                     (batY >= H - Half && move[i] > 0);
+            //拍子被上下邊界擋住時用0計帶角；其他情況使用帶方向的移動速度。
+            const float actual = againstEdge ? 0 : move[i];
+            const float offset = ball.y - batY;
+            //offset/56換成命中比例；偏下28px得+30°，偏上28px得-30°，中央0°。
+            const float base = 60 * std::clamp(offset / Half, -1.0f, 1.0f);
+            const float angle = std::clamp(
+                base + 8 * std::clamp(actual / maxSpeed[i], -1.0f, 1.0f),
+                -60.0f, 60.0f) * Rad;
+            //hypot算總速率sqrt(vx²+vy²)，命中增加5%，min限制在800px/s。
+            const float speed = std::min(800.0f, 1.05f * std::hypot(vx, vy));
+            vx = sign * speed * std::cos(angle);
+            vy = speed * std::sin(angle);
+
+            // 圓推出拍子的場內側，避免留在拍內而連續碰撞。
+            //左拍推到右方、右拍推到左方，球心距拍面大於半徑，避免下一小步重複命中。
+            ball.x = bats[i].x + sign * (9 + Radius + .01f);
+            ball.y = std::clamp(ball.y, Radius, H - Radius);
+            lastBat = i;
+            hitTimer = .09f;
+            events |= Paddle;
+        }
+
+        // 每個小步都判斷出界，一次得分後立即結束本次物理更新。
+        if (ball.x + Radius < 0 || ball.x - Radius > W) {
+            last = ball.x < 0 ? 1 : 0;
+            ++score[last];
+            now_phase = score[last] >= cfg.target ? Phase::Over : Phase::Point;
+            timer = now_phase == Phase::Over ? .18f : .35f;
+            events |= Score;
+            break;
+        }
     }
     return events;// 回傳本步發生的事件組合
 }

@@ -4,7 +4,7 @@
 
 constexpr int W = 1280, H = 720;//遊戲視窗運算尺寸w=寬,h=高，縮放不影響計算
 
-constexpr float Half = 56, Radius = 10, Step = 1.0f / 120;//Half指拍子長度的一半,Radius=球半徑,step=每次物理更新的固定秒數
+constexpr float Half = 56, Radius = 10, Step = 1.0f / 120;//Half指拍子長度的一半,Radius=球半徑,Step=每次物理更新的固定秒數
 
 //config=configuration配置縮寫；遊戲配置設定struct
 struct Config {
@@ -26,7 +26,7 @@ Intro開場、Serve發球倒數、Rally對打中、Point得分後停留 Paused�
 enum Event { None = 0, Wall = 1, Paddle = 2, Score = 4 };
 /*記錄「這次更新發生了哪些事」：None=無,Wall=球撞牆,Paddle=球碰到球拍,Score=有人得分
 --------------------------------------------------------------
-跳過3是gpt教的天才方法，腦子沒點問題或刻意優化程式根本不會這樣寫
+事件各占一個位元，使用 1、2、4，才能組合保存多個事件。
 名稱      十進位   二進位
 None      0       000
 Wall      1       001
@@ -62,7 +62,7 @@ struct Game {
 
     Config cfg;//此局遊戲設定檔
     std::mt19937 rng;
-    //名為：rng(random number generator縮寫)的種子初始化亂數產生器
+    //rng 是 random number generator 縮寫，為亂數引擎物件；建構子以 seed 初始化
     Phase now_phase = Phase::Intro, bf_pause_phase = Phase::Intro;
     //now_phase是目前階段；bf_pause_phase是暫停前階段，用來接回原流程
     Body bats[2]{{48, H/2}, {W-48, H/2}}, ball{W/2, H/2};
